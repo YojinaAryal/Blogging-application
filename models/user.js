@@ -13,7 +13,7 @@ const userSchema= new Schema({
     },
     salt: {
         type: String,
-        required: true,
+        
     },
     password: {
     type: String,
@@ -37,18 +37,22 @@ const userSchema= new Schema({
 userSchema.pre("save",function(next){
     const user = this;
 
-    if(!user.isModified("password")) return;
+    if(!user.isModified("password")) return  next();;
 
-    const salt= randomBytes(16).toString();
+    const salt= randomBytes(16).toString("hex");
     const hashedPassword = createHmac("sha256",salt)
     .update(user.password)
     .digest("hex");
 
-    this.salt=salt;
-    this.password= hashedPassword;
-
+    user.salt=salt;
+    user.password= hashedPassword;
     next();
+});
+userSchema.static("matchPassword",function(email,password){
+const user= this.findOne({email});
+if(!user) return false;
 })
+
 
 const User=model("user",userSchema);
 module.exports=User;
