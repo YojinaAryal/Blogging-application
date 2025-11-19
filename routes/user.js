@@ -12,22 +12,17 @@ router.get("/signup",(req,res)=>{
 
   router.post("/signin", async (req, res) => {
   try {
-    const { email, password } = req.body;
 
     // Use the static method
-    const user = await User.matchPassword(email, password);
-
-    // user object returned with password & salt hidden
-    console.log("User", user);
-
-    return res.redirect("/");
+    const token = await User.matchPasswordAndGenerateToken(email, password);
+    return res.cookie("token",token).redirect("/");
 
   } catch (err) {
-    console.error("Signin error:", err.message);
-    return res.status(400).send(err.message); // show "User not found!" or "Incorrect Password!"
+    return res.render("signin",{
+      error: "Incorrect Email or Password",
+    });
   }
 });
-
 
 router.post("/signup", async(req,res)=>{
     const {fullname,email,password}=req.body;
