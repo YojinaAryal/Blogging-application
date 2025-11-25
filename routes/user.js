@@ -12,9 +12,12 @@ router.get("/signup",(req,res)=>{
 
   router.post("/signin", async (req, res) => {
   try {
+     const { email, password } = req.body; 
 
     // Use the static method
     const token = await User.matchPasswordAndGenerateToken(email, password);
+    
+
     return res.cookie("token",token).redirect("/");
 
   } catch (err) {
@@ -24,7 +27,12 @@ router.get("/signup",(req,res)=>{
   }
 });
 
+router.get("/logout",(req,res)=>{
+  res.clearCookie("token").redirect("/")
+})
+
 router.post("/signup", async(req,res)=>{
+   try {
     const {fullname,email,password}=req.body;
     await User.create({
         fullname,
@@ -32,6 +40,13 @@ router.post("/signup", async(req,res)=>{
         password,
     });
     return res.redirect("/");
-})
+}
+catch (err) {
+    console.log(err);
+    return res.render("signup", {
+      error: "Something went wrong",
+    });
+  }
+});
 
-module.exports=router;
+module.exports = router;
