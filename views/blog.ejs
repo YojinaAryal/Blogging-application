@@ -13,9 +13,19 @@
         <img src="<%= blog.coverImageUrl %>" width="500px"/>
         <p><%= blog.body %></p>
     </div>
-     <div class="container mt-4">
-        <img src="<%= blog.createdBy.profileImageUrl %>" width="100px" <%= blog.createdBy.fullName %>
+   
+     <div class container mt-3>
+        <h1>Comments</h1>
+        <form action="/blog/comment/<%= blog._id %>" method="POST">
+
+            <div class="mb-3">
+                <label for="commentBody" class="form-label">Add a comment</label>
+                <textarea class="form-control" id="commentBody" name="commentBody" rows="3"></textarea>
+            </div>
+            <button type="submit" cl ass="btn btn-primary">Submit</button>
      </div>
+    </form>
+
        <%- include("partials/script") %>
 
     
